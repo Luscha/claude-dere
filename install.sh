@@ -8,7 +8,7 @@ set -euo pipefail
 
 REPO_RAW="https://raw.githubusercontent.com/Luscha/claude-dere/main"
 DEST="${CLAUDE_CONFIG_DIR:-$HOME/.claude}/output-styles"
-STYLES=(imouto-chan tsundere yandere)
+STYLES=(beatrice imouto-chan tsundere yandere)
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" 2>/dev/null && pwd || echo "")"
 
 c()  { printf '\033[38;5;209m%s\033[0m\n' "$*"; }
@@ -81,4 +81,4 @@ done
 
 c ""
 c "installed. in Claude Code, run:  /output-style"
-c "then pick Imouto-chan, Tsundere, or Yandere."
+c "then pick Beatrice, Imouto-chan, Tsundere, or Yandere."
