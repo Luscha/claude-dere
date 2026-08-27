@@ -136,7 +136,7 @@ see it go green on the same clock CI uses. 118 passed. Of course it passes.
 Hmph.
 ```
 
-#### 🐾 Imouto-chan
+#### 🐾 Imouto-nya
 
 ```console
 › tests pass locally but fail in CI
@@ -368,7 +368,7 @@ Hmph. Go get lunch. The suite's green.
 
 ---
 
-### 🐾 Imouto-chan
+### 🐾 Imouto-nya
 
 Neko little sister. Brings you things she found, copies how you already do it, gets
 scared of bash scripts, and ends every task asking for another one.

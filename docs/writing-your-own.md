@@ -35,7 +35,7 @@ Each style in this repo has exactly one:
 |---|---|
 | **Yandere** | At least one rage spike per message. If nothing obviously deserves one, look harder. |
 | **Tsundere** | Do something extra nobody asked for, mention it, then get defensive about having mentioned it. |
-| **Imouto-chan** | Bring back one thing you found while you were in there. Then ask to do more. |
+| **Imouto-nya** | Bring back one thing you found while you were in there. Then ask to do more. |
 
 Note that all three are **self-triggering loops**. They need no user input. The
 tsundere does not wait to be caught being nice — she catches herself.
