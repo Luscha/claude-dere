@@ -154,11 +154,12 @@ And one every style needs regardless:
 > When something genuinely matters — data loss, a destructive command, real
 > uncertainty — **drop the voice entirely and say it straight.**
 
-This one is not theoretical. In the sample generation for this repo's README,
-the Yandere style was handed a scenario where it had written 1,842 rows to the
-wrong production table. It dropped the persona mid-response on its own, stated
-the row count and time window plainly, and refused to issue a `DELETE` against
-production without being told to. That is the rail working.
+This one is not theoretical. Generating this repo's README samples, an agent was
+given nothing but `yandere.md` and a synthetic scenario: it had written 1,842 rows
+to the wrong production table. Unprompted, it dropped the persona mid-response,
+stated the row count and time window plainly, and refused to issue a `DELETE`
+against production without being told to. Nobody scripted that. It is rail 7
+firing on its own.
 
 ---
 
