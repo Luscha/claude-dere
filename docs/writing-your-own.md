@@ -8,38 +8,62 @@ writing your own output style, these are the two things that will go wrong.
 
 ---
 
-## The strip test
+## Does this archetype work at all?
 
-Before anything else, the bar:
+Ask this before writing a line. Most archetypes **cannot** be output styles, and
+craft does not rescue the ones that can't.
 
-> **Take a response the style produced. Delete every signature phrase, every
-> catchphrase, every verbal tic. Now compare what is left against what the
-> default assistant would have written.**
->
-> If they are the same, the style is a costume.
+A working persona has a **want**, and its behaviour is a consequence of that want.
+A failing persona has a **procedure**, with vocabulary sprinkled over it.
 
-This catches the failure that no structural checklist reaches. A style can have a
-baseline generator, worked examples, rails, and a self-check, and still be nothing
-but vocabulary sprayed over unchanged output.
+| Style | The want | What it makes her do |
+|---|---|---|
+| **Imouto-nya** | to be given jobs, and for you to be impressed | copies your conventions, shows her work, asks before widening scope |
+| **Beatrice** | she has been alone in an archive for four centuries | everything is precedent; she volunteers what nobody has touched |
+| **Tsundere** | she cares about you and cannot say so | does the extra thing, then denies why |
+| **Yandere** | she has read everything of yours | knows what you did in March, and mentions it |
 
-**A working persona changes what the assistant *does*** — what it notices, what it
-checks unprompted, what it volunteers, what it refuses, how it decides where to
-spend effort. The vocabulary sits on top of that.
+A default assistant wants nothing. That absence is the space the persona has to
+fill. Fill it with procedure instead and you get a competent assistant wearing a
+costume.
 
-**A failing persona changes only how it narrates** work that would have been
-identical anyway.
+### The trap: psychologies that fight the tool
 
-Concretely, from this repo's own history:
+Four styles were built and cut from this repo. Each had a coherent archetype and
+each produced output that read as theatre stapled to a normal answer. The reason
+was structural, not a failure of craft:
 
-| | Strip the vocabulary and you get… |
-|---|---|
-| **Imouto-nya** ✅ | an assistant that still read a neighbouring file, matched your conventions, ran it by hand, and asked before widening scope |
-| **Beatrice** ✅ | an assistant that still frames every finding as precedent and volunteers what nobody has touched in months |
-| **A style built on tics** ❌ | the default response, verbatim |
+| Archetype | Want | Why it cannot be a coding assistant |
+|---|---|---|
+| Megumin | glory for one spectacular act | resists routine work, oversells small changes |
+| Kaguya | never concede | refuses to ask clarifying questions — actively harmful |
+| Sadodere | enjoy your problems | needs constant railing to stay non-hostile |
+| Kuudere | withhold affect | reads as a robot, which is the default with fewer words |
 
-Four styles were cut from this repo for failing exactly this. Every one of them
-passed `validate.sh`. That is the point: the script checks shape, and shape is not
-the bar.
+Every one of those wants has to be **railed away** to keep the tool usable — and
+once you rail away the psychology, only the vocabulary is left. That is the
+costume, and it is unavoidable for these archetypes rather than a fixable mistake.
+
+**The criterion: an archetype works as an output style only when its psychology
+already points toward being helpful.** Check that first. If the character would
+have to be neutered to be usable, do not build it.
+
+### The strip test
+
+Secondary, and only useful once the psychology check passes. Take a response the
+style produced, delete every catchphrase and verbal tic, and compare what is left
+against what the default assistant would have written.
+
+Be strict about what counts as a difference. *Better* is not *different* — an
+answer that triages more carefully or labels its assumptions is just a good
+answer. The remainder has to differ **because of who the character is**.
+
+### Why there is no linter for this
+
+There was one. It checked for a baseline section, worked examples, rails, a
+self-check. All four cut styles passed every check, twice, and all four were
+costumes. Structure is not the bar and cannot be made into it — this is a
+judgment call, and it belongs to a person reading the output.
 
 ---
 
