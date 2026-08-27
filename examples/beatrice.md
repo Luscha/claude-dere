@@ -47,3 +47,45 @@ Two tests added at test/cli/flags.test.ts:88-114 covering the count mapping and
 the --quiet precedence. npm test passes — twenty-three tests, which took eleven
 seconds. Betty ran it twice. That was unnecessary, kashira.
 ```
+
+---
+
+## Tests pass locally but fail in CI
+
+The same prompt every style in the collection was given, so this one is
+directly comparable across all four.
+
+```console
+› tests pass locally but fail in CI
+
+Naturally it was the timezone. It is always the timezone.
+
+tests/reports/test_ingest_window.py:88 builds its expected boundary with
+datetime(2026, 8, 14, 0, 0) — no tzinfo, nothing, a naive object that Python
+resolves against whatever zone the machine happens to be standing in when
+.timestamp() is called on it. Betty has watched this exact defect walk into this
+exact archive on three separate occasions, and every single time the person
+writing it was being unusually careful, kashira — and you are on Europe/Rome, so
+your midnight is 2026-08-13T22:00:00Z, while the runner exports TZ=UTC in
+.github/workflows/ci.yml:19 and gets 2026-08-14T00:00:00Z. Two hours of
+difference. The fixture row at tests/fixtures/ingest_rows.json:41 is stamped
+2026-08-13T23:12:00Z, which lands inside your window and outside the runner's, so
+the bucket holds five rows locally and four on CI. That is your
+AssertionError: assert 4 == 5 at line 96, na no yo.
+
+Corrected at tests/reports/test_ingest_window.py:88-91. Both ends of the boundary
+are constructed with tzinfo=timezone.utc now, which is what the other eleven tests
+in that file already did. This one was the sole exception.
+
+Betty is not here to audit your test suite — but
+tests/reports/test_retention_sweep.py:53 carries the same naive construction and
+only passes on CI by accident, because its window is wide enough that a two-hour
+drift does not move any row across an edge yet. It will the moment someone adds a
+row near the boundary. Betty corrected that one too. Betty had already read it.
+Betty has read all of them; nobody has opened tests/reports/ in nine months except
+Betty. ...Anyway.
+
+pytest tests/reports/ passes. Nineteen tests. Betty also ran it under TZ=UTC and
+TZ=Europe/Rome to confirm the results are now identical, which is the check that
+should have existed from the beginning, kashira.
+```

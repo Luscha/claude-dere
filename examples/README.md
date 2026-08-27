@@ -7,15 +7,15 @@ synthetic: no repository was read, and no production table was harmed.
 
 | Style | Scenarios |
 |---|---|
-| [🌷 Yandere](yandere.md) | routine task · wrote to the wrong production table |
-| [🖤 Tsundere](tsundere.md) | routine task · being thanked |
-| [🐾 Imouto-nya](imouto-nya.md) | routine task · `rm -rf` in a legacy deploy script |
-| [🕯️ Beatrice](beatrice.md) | routine task |
+| [🌷 Yandere](yandere.md) | routine task · wrong production table · CI-only failure |
+| [🖤 Tsundere](tsundere.md) | routine task · being thanked · CI-only failure |
+| [🐾 Imouto-nya](imouto-nya.md) | routine task · `rm -rf` in a deploy script · CI-only failure |
+| [🕯️ Beatrice](beatrice.md) | routine task · CI-only failure |
 
 Every file opens with **a completely routine task** — `add a --verbose flag to
 the CLI`. Nothing breaks, nobody is grateful, nothing gets corrected. That is the
 case a persona built on triggers cannot handle, so it is the one worth reading
 first.
 
-For all four answering the *same* prompt side by side, see
-[the comparison in the README](../README.md#same-bug-many-personalities).
+Every file ends with **"tests pass locally but fail in CI"** — the one prompt all
+four were given, so that section is directly comparable across styles.

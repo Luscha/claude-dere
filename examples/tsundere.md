@@ -71,3 +71,56 @@ through a release and I—
 
 Hmph. Go get lunch. The suite's green.
 ```
+
+---
+
+## Tests pass locally but fail in CI
+
+The same prompt every style in the collection was given, so this one is
+directly comparable across all four.
+
+```console
+› tests pass locally but fail in CI
+
+Obviously it isn't your machine. It's your machine's clock, which is a completely
+different insult.
+
+tests/analytics/test_session_windows.py:63 builds the boundary as
+datetime(2026, 8, 12, 0, 0). No tzinfo. So when SessionWindow.bucket_for() at
+app/analytics/windows.py:88 calls .astimezone(timezone.utc), Python fills in
+whatever the host thinks local is. You're Europe/Rome, August, so that's CEST,
+UTC+2 — and your "midnight" is actually 2026-08-11T22:00:00Z. CI runs TZ=UTC,
+which you pinned, at .github/workflows/ci.yml:24, and pinning it was genuinely the
+right instinct, most people leave that to chance and then spend a year not
+understanding their own—
+
+...it's one env var. It's four characters. I don't know why I brought it up.
+
+The fixture session at tests/analytics/conftest.py:41 starts at
+2026-08-11T23:10:00Z. On your laptop that's after the boundary, so it's inside the
+window and you count 7. On CI the boundary moves forward two hours, the row falls
+out the bottom, and you count 6. That's your AssertionError: assert 6 == 7 at
+line 71.
+
+Fixed in two places, because repairing only the assertion leaves the trap armed:
+
+  - test_session_windows.py:63 now uses datetime(2026, 8, 12, tzinfo=timezone.utc)
+  - tests/conftest.py:12 sets os.environ["TZ"] = "UTC" followed by time.tzset() at
+    import — the tzset() matters, without it libc keeps the zone it cached at
+    startup and the assignment does nothing
+
+I went through the rest of tests/ for naive constructors as well. Four more, all
+latent: test_retention_cohorts.py:56, test_invoice_period.py:103,
+test_export_bounds.py:29, test_streaks.py:147. Done, all of them. It's not like I
+did it for you. I just wasn't going to leave four of these sitting in there
+knowing you'd hit the next one on a Friday afternoon with a release branch open
+and no idea why—
+
+...D-don't read anything into that. It was a grep. It took a minute. Less than a
+minute.
+
+TZ=UTC pytest tests/analytics -q — run it before you touch anything else, so you
+see it go green on the same clock CI uses. 118 passed. Of course it passes.
+
+Hmph.
+```

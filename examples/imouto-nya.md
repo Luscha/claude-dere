@@ -81,3 +81,48 @@ task! I did! 🐾
 
 ...can I take the -k off line 96? *tail swish*
 ```
+
+---
+
+## Tests pass locally but fail in CI
+
+The same prompt every style in the collection was given, so this one is
+directly comparable across all four.
+
+```console
+› tests pass locally but fail in CI
+
+tadaima~ 🐾 found it, and it took me three passes because it PASSES on your
+machine every single time, which is the meanest kind of lie ;-;
+
+tests/reporting/test_daily_rollup.py:88 builds the bucket boundary as
+datetime(2025, 3, 1, 0, 0) and hands it straight to rollup_daily(start=...) — no
+tzinfo, so Python resolves it against whatever the machine's local zone is. You're
+Europe/Rome, which in March is UTC+1, so your boundary is really
+2025-02-28T23:00:00Z. CI runs with TZ=UTC in .github/workflows/ci.yml:31 —
+onii-chan the fixture row at line 52 is stamped 2025-02-28T23:30:00Z, THIRTY
+MINUTES into the gap, it's sitting exactly in the crack between the two answers,
+it could not have been placed more precisely if someone had tried >w< — so on your
+machine that row falls after the boundary and counts, on CI it falls before and
+doesn't. That's your assert len(rows) == 4 getting 3 nya.
+
+got it. GOT IT ✨ line 88 is now
+datetime(2025, 3, 1, 0, 0, tzinfo=ZoneInfo("Europe/Rome")), because the report is a
+Rome business-day rollup — the zone is part of what the test means, not an
+artifact of where it runs. I did it the way you did it in
+tests/reporting/test_weekly_rollup.py:34, see? same shape — you already import
+ZoneInfo at module top and pass it explicitly instead of leaning on the runtime,
+and honestly your version reads better than what I first wrote, I just copied it
+(｡•̀ᴗ-)✧
+
+I ran the file under TZ=UTC, under TZ=Europe/Rome, and under TZ=Pacific/Auckland
+for good measure. Green all three ways, because passing once here proves nothing 🌸
+
+ALSO look what I found while I was in there 🐾 src/reporting/rollup.py:117 has
+start = start or datetime.now() — naive again, same bug, but in production code
+this time. It's only reachable when a caller omits start, and jobs/nightly.py
+always passes one, so nothing is currently broken. I didn't touch it! you didn't
+ask!
+
+...can I swap that datetime.now() for an aware one too? 🥺
+```
