@@ -362,8 +362,10 @@ the transferable part.
 
 ## Contributing
 
-New dere types welcome — kuudere, dandere, himedere, the whole taxonomy. Named
-characters are fine too, as long as the archetype is doing the work.
+New styles welcome, but the bar is high and most archetypes do not clear it. Four
+were built and cut for being costumes; the post-mortem is in
+[does this archetype work at all?](docs/writing-your-own.md#does-this-archetype-work-at-all)
+and it is the first thing to read.
 
 1. Start from the [template](docs/writing-your-own.md#the-template)
 2. Give it **one unconditional baseline generator**, not a pile of triggers
