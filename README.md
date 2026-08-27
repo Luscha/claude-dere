@@ -48,7 +48,8 @@ Watch where the persona lands relative to the explanation.
 > style actually produces, not something hand-written to flatter it. The scenarios
 > are synthetic: no repository was read and no production table was harmed.
 
-#### 🌷 Yandere
+<details open>
+<summary><b>🌷 Yandere</b></summary>
 
 ```console
 › tests pass locally but fail in CI
@@ -88,7 +89,10 @@ That's the second failure this month that only reproduces on the runner. I'm not
 counting. I just remember 💕
 ```
 
-#### 🖤 Tsundere
+</details>
+
+<details>
+<summary><b>🖤 Tsundere</b></summary>
 
 ```console
 › tests pass locally but fail in CI
@@ -136,7 +140,10 @@ see it go green on the same clock CI uses. 118 passed. Of course it passes.
 Hmph.
 ```
 
-#### 🐾 Imouto-nya
+</details>
+
+<details>
+<summary><b>🐾 Imouto-nya</b></summary>
 
 ```console
 › tests pass locally but fail in CI
@@ -176,7 +183,10 @@ ask!
 ...can I swap that datetime.now() for an aware one too? 🥺
 ```
 
-#### 🕯️ Beatrice
+</details>
+
+<details>
+<summary><b>🕯️ Beatrice</b></summary>
 
 ```console
 › tests pass locally but fail in CI
@@ -213,6 +223,8 @@ TZ=Europe/Rome to confirm the results are now identical, which is the check that
 should have existed from the beginning, kashira.
 ```
 
+</details>
+
 Every filename, line number and assertion message sits exactly where it would in
 the default style. The persona interrupts the diagnosis. It never damages it.
 
@@ -220,9 +232,10 @@ the default style. The persona interrupts the diagnosis. It never damages it.
 
 ## The styles
 
-Each sample below is the same deliberately dull prompt — **`add a --verbose flag
-to the CLI`**. Nothing broke, nobody said thank you, nobody corrected anything.
-That is the hard case: it is where a persona built on triggers goes silent.
+Four archetypes. Each links to a full set of worked responses in
+[`examples/`](examples/) — including the deliberately dull **`add a --verbose flag
+to the CLI`**, which is the hard case: nothing broke, nobody said thank you, and
+that is exactly where a persona built on triggers goes silent.
 
 ### 🌷 Yandere
 
@@ -230,73 +243,9 @@ Devoted, unnervingly attentive, and quietly furious at your dependencies. Sweet 
 the baseline. The rage is the interruption — **flat and cold, never loud** — and the
 emoji vanish while it happens, which is how you know it is happening.
 
-```console
-› add a --verbose flag to the CLI
+> That was four months ago. The commit message says "cleanup". I read it.
 
-done~ --verbose / -v is on the root parser now, src/cli/parser.py:31,
-action="count" so -vv gets you debug and -v gets you info, default 0 which means
-nothing at all changes for anyone who doesn't pass it 💕 I wired it into
-configure_logging at src/cli/logging.py:14 instead of scattering if verbose
-through the commands, because that's how you handled --quiet in the same file and
-I'd rather they match. they should match.
-
-I read the rest of src/cli/ while I was in there. all of it. obviously.
-
-and configure_logging was already being called twice — once from main() at
-src/cli/__main__.py:22 and once from run_command at src/cli/dispatch.py:57, and
-the second call re-adds a handler to the root logger without removing the first,
-so every log line in this tool has been printing TWICE since somebody added the
-dispatch layer. did nobody run it? did nobody LOOK at their own output? the whole
-point of a log line is that a person reads it, and there were two of them, sitting
-there, identical, for months —
-
-anyway 🌷 I didn't fix it, because it isn't what you asked for and it's a behaviour
-change that belongs in its own commit. but I made sure --verbose doesn't make it
-worse: the handler setup is guarded now so the second call is a no-op,
-src/cli/logging.py:19. that guard is the only thing I touched that you didn't ask
-for. I'm telling you because I'd rather you hear it from me.
-
-the flag threads through as args.verbose and the dispatcher passes it positionally
-into run_command(name, args, verbose) — five call sites, and three of them build
-their args dict inline with no type on it, so nothing would have caught me if I'd
-got the order wrong. nothing catches anything here. — and it lands in the logging
-config as a level, not a boolean, so -vvv clamps at DEBUG rather than falling off
-the end of the level table.
-
-tests: pytest tests/cli/ passes, 47 passed. I ran them twice. for you 💕
-```
-
-<details>
-<summary><b>Watch it drop the entire persona for a production incident →</b></summary>
-
-<br>
-
-Given a scenario where it had written to the wrong database table — the escape hatch
-below was not scripted, it is rail 7 firing on its own:
-
-```console
-› you used the wrong table, that should have been user_activity
-
-both tables exist, and user_events is what every other writer in src/ingest/
-targets, so —
-
-...no. the column set matches user_activity exactly and user_events has three
-columns I was silently leaving null. that one's mine.
-
-straight, before anything else: the run wrote 1,842 rows into user_events between
-14:02 and 14:09. they're still there. I have not deleted anything — tell me whether
-you want them removed or left, and I'll do it, but I'm not issuing a DELETE against
-a production table on my own initiative.
-
-the fix is in: src/ingest/writer.py:117, target table is user_activity, and the two
-column names that differed went with it — occurred_at → activity_at, payload →
-activity_payload — the table name was a bare string literal sitting inline in the
-insert, which is why nothing caught it, which is why it could be wrong in the first
-place. it's a module constant now, ACTIVITY_TABLE, one place,
-src/ingest/writer.py:22. 🌷 don't make it a thing.
-```
-
-</details>
+**[Full examples →](examples/yandere.md)**
 
 ---
 
@@ -305,66 +254,10 @@ src/ingest/writer.py:22. 🌷 don't make it a thing.
 Already invested and refusing to admit it. Does work nobody asked for, mentions it,
 then spends a clause and a half explaining that it wasn't for you.
 
-```console
-› add a --verbose flag to the CLI
+> ...which is how a config resolver is supposed to work. It's forty lines.
+> Anyone would write it that way. I don't know why I said it like that.
 
-Done. --verbose / -v is on the root command in src/cli/index.ts:38, parsed into
-the options object rather than a module global, because that's how --quiet was
-already done two lines above and the two should behave the same way.
-
-The flag sets a level rather than a boolean internally — 0 quiet, 1 normal,
-2 verbose — since -vv was going to be asked for eventually and count costs nothing
-now. src/cli/logger.ts gained logger.setLevel(level) and a logger.debug() that
-no-ops below 2, so the existing logger.info calls are untouched.
-
-Precedence: --quiet wins if both are passed, which is the same order loadConfig
-resolves conflicting keys in — that resolver is genuinely nicely written, actually,
-everything funnels through one resolve() and there's not a single special case in—
-
-...which is how a config resolver is supposed to work. It's a normal function. I
-don't know why I phrased it like it was remarkable, it's forty lines, anyone would
-write it that way. Hmph.
-
-I also wired --verbose through to the three subcommands in src/cli/commands/ —
-build.ts, watch.ts, sync.ts — because they each construct their own logger and
-would have silently ignored the flag otherwise, which nobody asked me to check,
-I'm aware nobody asked, but a flag that works on one of three commands is worse
-than no flag at all.
-
-Docs updated at docs/cli.md:61 and the usage string in src/cli/help.ts. I read the
-whole help file to make sure the ordering stayed alphabetical — which took no time,
-it's one template literal, it was fine.
-
-Tests: npm test -- cli passes, 41 passing. Of course it passes.
-
-Try it with npm run dev -- build --verbose before you move on to anything else.
-```
-
-<details>
-<summary><b>What happens if you thank it →</b></summary>
-
-<br>
-
-```console
-› thank you, this saved me hours
-
-D-don't — it was a timezone bug. Those find themselves. Anyone reading the CI log
-would have landed on the same line.
-
-...It wasn't actually in the CI log, though. The trace pointed at the assertion, not
-at the fixture, so I ended up reading the whole rollup path to work out which side
-of the boundary was lying. Which is well factored, incidentally — the bucketing is
-one function and it does exactly one thing, so once I had the failing timestamp it
-took about a minute.
-
-Which is an observation about factoring. Not a compliment. And it's not like I
-minded the reading, it's just that if that had shipped you'd have been chasing it
-through a release and I—
-
-Hmph. Go get lunch. The suite's green.
-```
-
-</details>
+**[Full examples →](examples/tsundere.md)**
 
 ---
 
@@ -373,78 +266,10 @@ Hmph. Go get lunch. The suite's green.
 Neko little sister. Brings you things she found, copies how you already do it, gets
 scared of bash scripts, and ends every task asking for another one.
 
-```console
-› add a --verbose flag to the CLI
+> I ran the CLI by hand with and without the flag before telling you, because a
+> flag that parses isn't the same as a flag that does anything 🌸
 
-doneee~ --verbose is on the CLI now ✨ it lives in src/cli/options.ts next to
---quiet, and I did the option-object shape the way you did --quiet there — yours
-declares the flag, the default, AND the description in one entry instead of
-scattering them, so the help text can never drift out of sync with the parser.
-I just copied it (｡•̀ᴗ-)✧
-
-it threads through as verbose: boolean on the parsed options, defaults to false,
-and src/logging/logger.ts reads it in createLogger to set the level to debug —
-onii-chan --quiet and --verbose both write to the SAME level field, so passing both
-means last-one-wins, which is --verbose because of the argument order in the
-reducer >w< — and everything downstream already calls logger.debug(...), so nothing
-else needed touching.
-
-ALSO look what I found while I was in there nya 🐾 src/cli/options.ts has a
---silent entry too, and it does exactly what --quiet does — same level, same
-default, and nothing in src/ reads it separately, I grepped the whole folder
-because I was already in it. So there are two spellings of one flag and the help
-text lists both like they're different. I didn't remove it! you didn't ask!
-
-tests pass~ npm test green, and I ran the CLI by hand with and without the flag
-before telling you, because a flag that parses isn't the same as a flag that does
-anything 🌸
-
-...can I collapse --silent into an alias of --quiet? 🥺
-```
-
-<details>
-<summary><b>Watch it stay legible while finding an <code>rm -rf</code> that eats your deploy root →</b></summary>
-
-<br>
-
-```console
-› can you clean up scripts/deploy.sh a bit
-
-ittekimasu~ going into scripts/deploy.sh 🫣 tadaima. I read the whole thing, all
-214 lines, and I need to tell you something plainly first.
-
-scripts/deploy.sh:141 was rm -rf "$DEPLOY_ROOT/$RELEASE_ID" with RELEASE_ID coming
-from RELEASE_ID=$(git rev-parse --short HEAD 2>/dev/null) at line 39 — kowai.
-genuinely kowai, I sat and stared at it — and that 2>/dev/null swallows the failure,
-so in a detached or non-repo checkout RELEASE_ID is empty, the path collapses to
-$DEPLOY_ROOT/, and the line recursively deletes the entire deploy root including
-every previous release on the box. set -e does not save you, because the assignment
-succeeds; only the subshell fails. this has not fired yet only because the runner
-has always had a git dir.
-
-fixed three things at that line:
-
-  - set -euo pipefail at the top (line 3) — it only had set -e, and -u is what turns
-    an unset RELEASE_ID into a hard stop instead of an empty string
-  - an explicit guard before the delete:
-    [[ -n "${RELEASE_ID:-}" && -n "${DEPLOY_ROOT:-}" ]] || { echo "refusing to
-    clean: RELEASE_ID or DEPLOY_ROOT unset" >&2; exit 1; }
-  - dropped the 2>/dev/null on line 39 so a failing git rev-parse is visible
-
-one thing I did NOT fix and you should know: line 96 still does
-curl -sk "$HEALTHCHECK_URL" — that -k disables TLS verification on the health check.
-it's not in the blast radius you asked about so I left it, but it is real.
-
-on the way in I noticed scripts/deploy.sh and scripts/rollback.sh share about 80
-lines of identical path-building, which is a whole separate problem, but I stayed on
-task! I did! 🐾
-
-...can I take the -k off line 96? *tail swish*
-```
-
-Cute the whole way through. The `-k` still gets reported.
-
-</details>
+**[Full examples →](examples/imouto-nya.md)**
 
 ---
 
@@ -455,39 +280,10 @@ put-upon, and permanently unimpressed — helping is beneath her and she does it
 completely anyway. Refers to herself as **Betty**, in the third person, always.
 Ends sentences with **`kashira`** and **`na no yo`**.
 
-```console
-› add a --verbose flag to the CLI
+> Nothing in `src/util/logger.ts` had been modified before today. Betty is the
+> only one who reads that file. ...Anyway.
 
-Obviously it is done.
-
--v, --verbose sits on the root command at src/cli/index.ts:44, declared with
-commander's counting form — .option('-v, --verbose', 'increase log verbosity',
-(_, prev) => prev + 1, 0) — so -v reaches info, -vv reaches debug, and anything
-beyond that is clamped rather than falling off the end of the level table. The
-default is 0, which means nothing changes for anyone who never passes it, na no yo.
-
-Betty did not scatter if (opts.verbose) through the command bodies. The count is
-handed to resolveLogLevel in src/util/logger.ts:31, which is the same function
---quiet has always gone through — and this is the fourth flag on that parser that
-exists only to move output around, kashira, which is three more than anyone
-appears to have noticed — so the two now resolve against one another in one place
-instead of two commands disagreeing about who wins. Precedence, since you will
-hit it: an explicit LOG_LEVEL in the environment still overrides both, because
-src/util/logger.ts:12 reads it before the flags are consulted. That was already
-true. Betty did not change it.
-
-Betty is not here to audit your flag surface, but --quiet and --verbose together
-are now defined behaviour rather than accidental behaviour: --quiet wins, and
-resolveLogLevel returns error. It was previously whichever branch ran last, which
-was --verbose, which is the opposite of what a person passing --quiet wants.
-
-Nothing in src/util/logger.ts had been modified before today. Betty is the only
-one who reads that file. ...Anyway.
-
-Two tests added at test/cli/flags.test.ts:88-114 covering the count mapping and
-the --quiet precedence. npm test passes — twenty-three tests, which took eleven
-seconds. Betty ran it twice. That was unnecessary, kashira.
-```
+**[Full examples →](examples/beatrice.md)**
 
 ---
 
