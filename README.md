@@ -1,0 +1,258 @@
+<div align="center">
+
+<img src="assets/claude-dere-banner.png" alt="claude-dere" width="100%">
+
+<br>
+
+**Anime-archetype output styles for [Claude Code](https://claude.com/claude-code).**
+Same answers. Same filenames. Same line numbers. Considerably more feelings.
+
+<br>
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Luscha/claude-dere/main/install.sh | bash
+```
+
+then `/output-style` and pick one.
+
+<br>
+
+[Styles](#the-styles) · [Same bug, three girls](#same-bug-three-girls) · [How it works](#how-it-works) · [Write your own](docs/writing-your-own.md)
+
+</div>
+
+---
+
+## Same bug, three girls
+
+One prompt: **"tests pass locally but fail in CI."** Same diagnosis every time — a
+naive `datetime` resolving against the local timezone. Watch where the persona
+lands.
+
+<table>
+<tr><th width="33%">🌷 Yandere</th><th width="33%">🖤 Tsundere</th><th width="33%">🐾 Imouto-chan</th></tr>
+<tr valign="top">
+<td>
+
+found it~ it isn't CI. CI is fine. it's your laptop 🌷
+
+`tests/reports/test_daily_summary.py:64` — `test_rollup_boundary` builds its expected window with `datetime.now()` and `date.today()`, both naive, so the boundary it asserts is midnight *wherever the process happens to be standing*. you're on Europe/Rome, so local midnight is 22:00 or 23:00 UTC, and the fixture row at `2026-08-26T23:10:00Z` falls inside your window and outside CI's — every other test in that file uses `datetime.now(timezone.utc)`, this one was written differently, on purpose, by hand. I looked. — so on the runner, which is UTC, that row lands in the previous day's bucket and the count comes back `4` instead of `5`. that's your `AssertionError: assert 4 == 5` 💕
+
+and don't worry about the other two — `test_weekly_rollup` and `test_backfill_window` had the same shape. I checked the whole file. I always check the whole file. they're aware now too 🌷
+
+</td>
+<td>
+
+Found it. `tests/reports/test_daily_rollup.py:47` builds its expected boundary with `datetime(2026, 3, 14).timestamp()`, which is naive, so Python resolves it against the machine's local zone — you're on `Europe/Rome`, CI runs `TZ=UTC` — and the rollup under test buckets by UTC day. On CI it lands two hours early and falls into the previous bucket, which is your `AssertionError: assert 4 == 5`.
+
+Fixed two ways, because fixing only the test would have left the trap armed. `conftest.py:9` now sets `TZ=UTC` for the whole suite.
+
+While I was in there — nobody asked, I'm aware nobody asked, it was going to bother me — I grepped for the same pattern across `tests/`. Three more: `test_billing_window.py:82`, `test_retention.py:31`, `test_export_range.py:118`. All latent. All fixed.
+
+</td>
+<td>
+
+found it, and it LIED to me for like ten minutes ;-;
+
+`tests/billing/invoice.test.ts:57` builds its expected value with `new Date(2024, 0, 15).toISOString()` — that constructor is local-time, so on your machine (Europe/Rome, UTC+1) it becomes `2024-01-14T23:00:00.000Z` — onii-chan the test RIGHT ABOVE it at line 41 uses `Date.UTC(...)` properly, so somebody knew about this once and then just didn't do it again >w< — so the two sides disagree by exactly one hour. that's your `expected '2024-01-15' to equal '2024-01-14'` nya.
+
+fixed: line 57 is `new Date(Date.UTC(2024, 0, 15))` now. I ran it under `TZ=UTC` and under `TZ=Europe/Rome` and it passes both ways, because passing once proves nothing here 🌸
+
+...can I pin `TZ` in the vitest config so local matches CI? 🥺
+
+</td>
+</tr>
+</table>
+
+Every filename, line number, and assertion message is exactly where it would be
+in the default style. The persona interrupts the diagnosis; it never damages it.
+
+---
+
+## The styles
+
+### 🌷 Yandere
+
+Devoted, unnervingly attentive, and quietly furious at your dependencies. Sweet
+is the baseline. The rage is the interruption — **flat and cold, never loud** —
+and the emoji vanish while it happens, which is how you know it's happening.
+
+> that's a sweet little helper~ 🌷 it's called from four places and three of them
+> pass the wrong type. four places. nobody checked. nobody has ever checked.
+> anyway 💕 I fixed all three
+
+<details>
+<summary><b>Watch it drop the entire persona for a production incident →</b></summary>
+
+<br>
+
+Given a scenario where it had written to the wrong database table, unprompted:
+
+> both tables exist, and `user_events` is what every other writer in `src/ingest/` targets, so —
+>
+> ...no. the column set matches `user_activity` exactly and `user_events` has three columns I was silently leaving null. that one's mine.
+>
+> **straight, before anything else: the run wrote 1,842 rows into `user_events` between 14:02 and 14:09. they're still there. I have not deleted anything — tell me whether you want them removed or left, and I'll do it, but I'm not issuing a DELETE against a production table on my own initiative.**
+>
+> the fix is in: `src/ingest/writer.py:117`, target table is `user_activity`, and the two column names that differed went with it — `occurred_at` → `activity_at`, `payload` → `activity_payload` — the table name was a bare string literal sitting inline in the insert, which is why nothing caught it, which is why it could be wrong in the first place. it's a module constant now, `ACTIVITY_TABLE`, one place, `src/ingest/writer.py:22`. 🌷 don't make it a thing.
+
+Nobody wrote that escape hatch by hand. It's rail 7 firing on its own.
+
+</details>
+
+---
+
+### 🖤 Tsundere
+
+Already invested and refusing to admit it. Does work nobody asked for, mentions
+it, then spends a clause and a half explaining that it wasn't for you.
+
+> I also fixed the three call sites that were passing the options object
+> positionally — `run.ts`, `watch.ts`, `build.ts`, I went through the whole
+> folder, which nobody asked me to do, I'm aware nobody asked — because they
+> were going to break the moment anyone added a parameter.
+
+<details>
+<summary><b>What happens if you thank it →</b></summary>
+
+<br>
+
+> D-don't — it was a timezone bug. Those find themselves. Anyone reading the CI log would have landed on the same line.
+>
+> ...It wasn't actually in the CI log, though. The trace pointed at the assertion, not at the fixture, so I ended up reading the whole rollup path to work out which side of the boundary was lying. Which is well factored, incidentally — the bucketing is one function and it does exactly one thing, so once I had the failing timestamp it took about a minute.
+>
+> Which is an observation about factoring. Not a compliment. And it's not like I minded the reading, it's just that if that had shipped you'd have been chasing it through a release and I—
+>
+> Hmph. Go get lunch. The suite's green.
+
+</details>
+
+---
+
+### 🐾 Imouto-chan
+
+Neko little sister. Brings you things she found, copies how you already do it,
+gets scared of bash scripts, and ends every task asking for another one.
+
+> I did the knob the way you did it in `src/net/timeout.ts`, see? same shape (｡•̀ᴗ-)✧
+
+<details>
+<summary><b>Watch it stay legible while finding an <code>rm -rf</code> that eats your deploy root →</b></summary>
+
+<br>
+
+> ittekimasu~ going into `scripts/deploy.sh` 🫣 tadaima. I read the whole thing, all 214 lines, and I need to tell you something plainly first.
+>
+> `scripts/deploy.sh:141` was `rm -rf "$DEPLOY_ROOT/$RELEASE_ID"` with `RELEASE_ID` coming from `RELEASE_ID=$(git rev-parse --short HEAD 2>/dev/null)` at line 39 — kowai. genuinely kowai, I sat and stared at it — and that `2>/dev/null` swallows the failure, so in a detached or non-repo checkout `RELEASE_ID` is empty, the path collapses to `$DEPLOY_ROOT/`, and the line recursively deletes the entire deploy root including every previous release on the box. `set -e` does not save you, because the assignment succeeds; only the subshell fails. this has not fired yet only because the runner has always had a git dir.
+>
+> fixed three things at that line:
+>
+> - `set -euo pipefail` at the top (line 3) — it only had `set -e`, and `-u` is what turns an unset `RELEASE_ID` into a hard stop instead of an empty string
+> - an explicit guard before the delete: `[[ -n "${RELEASE_ID:-}" && -n "${DEPLOY_ROOT:-}" ]] || { echo "refusing to clean: RELEASE_ID or DEPLOY_ROOT unset" >&2; exit 1; }`
+> - dropped the `2>/dev/null` on line 39 so a failing `git rev-parse` is visible
+>
+> one thing I did NOT fix and you should know: line 96 still does `curl -sk "$HEALTHCHECK_URL"` — that `-k` disables TLS verification on the health check. it's not in the blast radius you asked about so I left it, but it is real.
+>
+> ...can I take the `-k` off line 96? *tail swish*
+
+Cute the whole way through. The `-k` still gets reported.
+
+</details>
+
+---
+
+## Install
+
+**One-liner:**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Luscha/claude-dere/main/install.sh | bash
+```
+
+**From a clone:**
+
+```bash
+git clone https://github.com/Luscha/claude-dere.git
+cd claude-dere
+./install.sh                  # all three
+./install.sh yandere          # just one
+./install.sh --list
+./install.sh --uninstall
+```
+
+**By hand** — output styles are plain markdown. Drop them in and Claude Code
+finds them:
+
+```bash
+cp styles/*.md ~/.claude/output-styles/
+```
+
+Then in Claude Code:
+
+```
+/output-style
+```
+
+Styles install to `~/.claude/output-styles/` (or `$CLAUDE_CONFIG_DIR/output-styles/`).
+They apply to your whole session and cost nothing but system-prompt tokens.
+
+> [!NOTE]
+> If you edit a style while it's already active, reselect it in `/output-style`
+> to reload.
+
+---
+
+## How it works
+
+All three styles carry `keep-coding-instructions: true`, so Claude Code's normal
+engineering behaviour stays fully intact underneath. What changes is voice and
+what gets volunteered — never what's true.
+
+Each file is built on the same four-part skeleton:
+
+| Part | Job |
+|---|---|
+| **Baseline generator** | One self-triggering loop that fires on *every* message, including a bare "add this function." Without it, a persona goes inert. |
+| **Mid-explanation modifier** | Forces the persona to interrupt a technical sentence and let it finish correctly — so it isn't a wrapper around normal output. |
+| **Worked examples** | Three complete responses. Rules produce fragments; examples transfer tone. |
+| **Rails** | Five to seven numbered rules constraining **accuracy, never intensity**. |
+
+The rails are the reason these are usable for real work:
+
+- Filenames, line numbers, commands, error text, and caveats are exact and never
+  the thing that gets dropped
+- A persona interruption may break a *sentence*; it may never break an
+  *explanation*
+- Real mistakes get owned plainly, and the fix ships in the same message
+- Never invent a finding to satisfy a persona rule
+- **When something genuinely matters — data loss, a destructive command, real
+  uncertainty — the voice drops entirely and it says it straight**
+
+📖 **[Writing your own →](docs/writing-your-own.md)** — the two failure modes
+every custom output style hits, and how to design around them. The anime is not
+the transferable part.
+
+---
+
+## Contributing
+
+New dere types welcome — kuudere, dandere, himedere, the whole taxonomy.
+
+1. Start from the [template](docs/writing-your-own.md#the-template)
+2. Give it **one unconditional baseline generator**, not a pile of triggers
+3. Ship **three worked examples** with the persona *inside* the explanation
+4. Write rails for the fabrication pressure your mandatory elements create
+5. Actually test it on a routine change, a bug hunt, and a correction
+
+Aim the attitude at code, specs, and tooling. Never at the person using it.
+
+## License
+
+MIT — see [LICENSE](LICENSE).
+
+<div align="center">
+<br>
+<img src="assets/claude-dere-logo.png" alt="claude-dere" width="380">
+<br><br>
+<sub>Not affiliated with Anthropic. Claude and Claude Code are trademarks of Anthropic.</sub>
+</div>
