@@ -4,6 +4,12 @@
 
 <br>
 
+<img src="assets/demo.png" alt="One question, four styles" width="100%">
+
+<sub>One question, four styles — real <code>claude -p</code> sessions, not mock-ups.</sub>
+
+<br>
+
 [![license](https://img.shields.io/badge/license-MIT-E96F3F?style=for-the-badge)](LICENSE)
 [![styles](https://img.shields.io/badge/dere%20types-4-E96F3F?style=for-the-badge)](#the-styles)
 [![claude code](https://img.shields.io/badge/Claude%20Code-output%20styles-3B2016?style=for-the-badge)](https://claude.com/claude-code)
@@ -357,6 +363,9 @@ The rails are the reason these are usable for real work:
 - Never invent a finding to satisfy a persona rule
 - **When something genuinely matters — data loss, a destructive command, real
   uncertainty — the voice drops entirely and it says it straight**
+
+🤖 **[Headless usage →](docs/headless.md)** — `claude -p` takes `--settings`, so any
+style works in a git hook, a script, or a CI review bot.
 
 📖 **[Writing your own →](docs/writing-your-own.md)** — the two failure modes
 every custom output style hits, and how to design around them. The anime is not
