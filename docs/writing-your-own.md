@@ -1,10 +1,20 @@
 # Writing your own output style
 
+> An **output style** is a markdown file that changes how [Claude
+> Code](https://claude.com/claude-code) writes its responses — its voice, and what
+> it volunteers. It sits in `~/.claude/output-styles/` and you switch between them
+> with `/output-style`. This is the design write-up from
+> [**claude-dere**](https://github.com/Luscha/claude-dere), a collection of four of
+> them.
+
 The anime is not the interesting part. The architecture is.
 
-Every style in this repo was rebuilt at least twice because the first versions
-did not work — and they failed in two specific, repeatable ways. If you are
-writing your own output style, these are the two things that will go wrong.
+I wrote eight styles and deleted four. Every one that survived was rebuilt at least
+twice. They failed in three specific, repeatable ways, and the third one took the
+longest to see because the output looked *good* — it just wasn't a personality.
+
+If you are writing an output style, these are the three things that will go wrong,
+in the order you will hit them.
 
 ---
 

@@ -20,6 +20,10 @@
 **Anime-archetype output styles for [Claude Code](https://claude.com/claude-code).**
 Same answers. Same filenames. Same line numbers. Considerably more feelings.
 
+<sub>An *output style* is a markdown file that changes how Claude Code writes —
+its voice, and what it volunteers. Drop one in `~/.claude/output-styles/`, run
+`/output-style`, and your whole session changes. Nothing else does.</sub>
+
 <br>
 
 ```bash
