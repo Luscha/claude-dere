@@ -45,7 +45,7 @@ validate() {
   # The #1 failure: a persona whose every trait is trigger-gated goes silent on
   # an ordinary turn.
   if has "$f" '^#+ .*(baseline|the engine|engines?|core mechanic)'; then
-    if flat "$f" '(every message|no trigger required|needs? no(thing)? (input|trigger)|without a trigger|self-trigger|fires on a bare)'; then
+    if flat "$f" '(every message|per message|no trigger required|needs? no(thing)? (input|trigger)|without a trigger|self-trigger|fires on a bare)'; then
       pass "baseline generator"
     else
       fail "baseline generator" "section exists but never says it fires unconditionally"
