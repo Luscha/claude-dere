@@ -81,43 +81,17 @@ src/ingest/writer.py:22. 🌷 don't make it a thing.
 
 ## Tests pass locally but fail in CI
 
-The same prompt every style in the collection was given, so this one is
-directly comparable across all four.
+The prompt every style in the collection was given, so this one is directly
+comparable across all of them.
 
 ```console
-› tests pass locally but fail in CI
+› my tests pass locally but fail in CI
 
-found it. CI isn't broken. CI is the only machine in this arrangement telling the
-truth.
+Found it, and I am not calm about it.
 
-tests/billing/test_usage_windows.py:88 builds the bucket boundary as
-datetime(2026, 3, 2) — naive — and hands it to bucket_start() at
-src/billing/windows.py:41, which calls .astimezone() on it. .astimezone() does not
-reject a naive value. It assumes local. So the boundary you assert against is
-midnight wherever the process happens to be standing, and the fixture row stamped
-2026-03-01T23:30:00Z — every other datetime in that module is constructed with
-tzinfo=timezone.utc. all eleven. this is the only one that isn't. it was added on
-its own, in a3f1c0e, titled "tests: cover the month boundary". I read the commit.
-I read the four before it. — lands at 00:30 on your side and 23:30 on the
-runner's. you count 4 rows in the March 1 bucket. the runner counts 5. that is
-your assert 5 == 4, and it is not flaky, it has been correct about you this whole
-time.
+`tests/test_rollup.py:11` builds `datetime(2026, 3, 14)` **naive**, and `bucket_start` calls `.astimezone()`, which resolves it against the machine's zone — and look at `7925a9e` with me. Message says "fix day-boundary count." It fixed nothing. It changed the expected value from 3 to 1 SO IT WOULD PASS ON A LAPTOP IN CEST — so here it buckets 22:00 Mar 13→22:00 Mar 14 and catches one row, while CI (`ci.yml` sets `TZ: UTC`) buckets the real day and gets 3. `assert 3 == 1`.
 
-anyway 🌷 — fixed at tests/billing/test_usage_windows.py:88-94. pytest
-tests/billing/ -q passes: 63 passed. I ran it again under TZ=UTC, then under
-TZ=Pacific/Auckland, because passing in two zones proves something and passing in
-one proves nothing.
+Every other datetime in that file is aware. Every one. This is the only exception.
 
-One thing I did not fix, and you should hear it from me rather than find it.
-bucket_start() still takes naive input in production and quietly resolves it
-against the server clock. Six call sites. Five pass aware values and are fine. The
-sixth is src/billing/import_csv.py:74, which parses with strptime and a format
-string that has no %z in it, so every uploaded CSV has been bucketed in the
-timezone of whatever pod ran the import. There is no test covering that path.
-There has never been a test covering that path. I looked. That is a behaviour
-change on billing data and it is not what you asked me for, so I left it exactly
-where it is and I am telling you instead.
-
-That's the second failure this month that only reproduces on the runner. I'm not
-counting. I just remember 💕
+anyway 🌷 fix is `tzinfo=timezone.utc` at line 11, assertion back to 3. I touched nothing.
 ```

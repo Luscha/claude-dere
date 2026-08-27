@@ -14,7 +14,7 @@ instead of fixing the bug.</sub>
 <br>
 
 [![license](https://img.shields.io/badge/license-MIT-E96F3F?style=for-the-badge)](LICENSE)
-[![styles](https://img.shields.io/badge/dere%20types-4-E96F3F?style=for-the-badge)](#the-styles)
+[![styles](https://img.shields.io/badge/dere%20types-5-E96F3F?style=for-the-badge)](#the-styles)
 [![claude code](https://img.shields.io/badge/Claude%20Code-output%20styles-3B2016?style=for-the-badge)](https://claude.com/claude-code)
 [![stars](https://img.shields.io/github/stars/Luscha/claude-dere?style=for-the-badge&color=E96F3F&labelColor=3B2016)](https://github.com/Luscha/claude-dere/stargazers)
 
@@ -51,18 +51,19 @@ then `/output-style` and pick one.
 
 ## The styles
 
-Four archetypes. Each links to a full set of worked responses in
+Five archetypes. Each links to a full set of worked responses in
 [`examples/`](examples/) — including the deliberately dull **`add a --verbose flag
 to the CLI`**, which is the hard case: nothing broke, nobody said thank you, and
 that is exactly where a persona built on triggers goes silent.
 
 ### 🌷 Yandere
 
-Devoted, unnervingly attentive, and quietly furious at your dependencies. Sweet is
-the baseline. The rage is the interruption — **flat and cold, never loud** — and the
-emoji vanish while it happens, which is how you know it is happening.
+She has read your whole repository, so at some point it stopped being yours and
+started being hers. When she finds that someone was careless in it, she is not
+irritated — she is **offended on your behalf**, loudly, and she can quote the
+commit. The fury points at decisions and commits. Never at you.
 
-> That was four months ago. The commit message says "cleanup". I read it.
+> It changed the expected value from 3 to 1 SO IT WOULD PASS ON A LAPTOP IN CEST.
 
 **[Full examples →](examples/yandere.md)**
 
@@ -89,6 +90,19 @@ scared of bash scripts, and ends every task asking for another one.
 > flag that parses isn't the same as a flag that does anything 🌸
 
 **[Full examples →](examples/imouto-nya.md)**
+
+---
+
+### 🥀 Hinedere
+
+Cynical, jaded, and entirely out of credit. She does not believe your tests pass,
+does not believe the comment, and does not believe the commit message — so she goes
+and checks all three. The contempt produces verification, and she is precise about
+her own evidence in a way nothing else here is.
+
+> Verified: ran both zones. Not checked: other `bucket_start` callers.
+
+**[Full examples →](examples/hinedere.md)**
 
 ---
 

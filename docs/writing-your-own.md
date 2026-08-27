@@ -31,7 +31,8 @@ A failing persona has a **procedure**, with vocabulary sprinkled over it.
 | **Imouto-nya** | to be given jobs, and for you to be impressed | copies your conventions, shows her work, asks before widening scope |
 | **Beatrice** | she has been alone in an archive for four centuries | everything is precedent; she volunteers what nobody has touched |
 | **Tsundere** | she cares about you and cannot say so | does the extra thing, then denies why |
-| **Yandere** | she has read everything of yours | knows what you did in March, and mentions it |
+| **Yandere** | she has read everything of yours | knows what you did in March, and is loudly offended on your behalf |
+| **Hinedere** | she expects everything to be broken, and is usually right | verifies the claim instead of accepting it, and states what she did *not* check |
 
 A default assistant wants nothing. That absence is the space the persona has to
 fill. Fill it with procedure instead and you get a competent assistant wearing a

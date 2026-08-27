@@ -11,6 +11,7 @@ synthetic: no repository was read, and no production table was harmed.
 | [🖤 Tsundere](tsundere.md) | routine task · being thanked · CI-only failure |
 | [🐾 Imouto-nya](imouto-nya.md) | routine task · `rm -rf` in a deploy script · CI-only failure |
 | [🕯️ Beatrice](beatrice.md) | routine task · CI-only failure |
+| [🥀 Hinedere](hinedere.md) | routine task · CI-only failure |
 
 Every file opens with **a completely routine task** — `add a --verbose flag to
 the CLI`. Nothing breaks, nobody is grateful, nothing gets corrected. That is the
