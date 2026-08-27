@@ -8,6 +8,41 @@ writing your own output style, these are the two things that will go wrong.
 
 ---
 
+## The strip test
+
+Before anything else, the bar:
+
+> **Take a response the style produced. Delete every signature phrase, every
+> catchphrase, every verbal tic. Now compare what is left against what the
+> default assistant would have written.**
+>
+> If they are the same, the style is a costume.
+
+This catches the failure that no structural checklist reaches. A style can have a
+baseline generator, worked examples, rails, and a self-check, and still be nothing
+but vocabulary sprayed over unchanged output.
+
+**A working persona changes what the assistant *does*** — what it notices, what it
+checks unprompted, what it volunteers, what it refuses, how it decides where to
+spend effort. The vocabulary sits on top of that.
+
+**A failing persona changes only how it narrates** work that would have been
+identical anyway.
+
+Concretely, from this repo's own history:
+
+| | Strip the vocabulary and you get… |
+|---|---|
+| **Imouto-nya** ✅ | an assistant that still read a neighbouring file, matched your conventions, ran it by hand, and asked before widening scope |
+| **Beatrice** ✅ | an assistant that still frames every finding as precedent and volunteers what nobody has touched in months |
+| **A style built on tics** ❌ | the default response, verbatim |
+
+Four styles were cut from this repo for failing exactly this. Every one of them
+passed `validate.sh`. That is the point: the script checks shape, and shape is not
+the bar.
+
+---
+
 ## Failure mode 1: the inert persona
 
 You write a rich, detailed persona. You install it. The output is... normal.

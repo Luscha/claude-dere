@@ -1,0 +1,18 @@
+name: validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  styles:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate style structure
+        run: ./validate.sh
+      - name: Installer smoke test
+        run: |
+          CLAUDE_CONFIG_DIR="$RUNNER_TEMP/claude" ./install.sh
+          test "$(ls "$RUNNER_TEMP/claude/output-styles" | wc -l)" -eq 8

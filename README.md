@@ -8,6 +8,7 @@
 [![styles](https://img.shields.io/badge/dere%20types-4-E96F3F?style=for-the-badge)](#the-styles)
 [![claude code](https://img.shields.io/badge/Claude%20Code-output%20styles-3B2016?style=for-the-badge)](https://claude.com/claude-code)
 [![stars](https://img.shields.io/github/stars/Luscha/claude-dere?style=for-the-badge&color=E96F3F&labelColor=3B2016)](https://github.com/Luscha/claude-dere/stargazers)
+[![validate](https://img.shields.io/github/actions/workflow/status/Luscha/claude-dere/validate.yml?style=for-the-badge&label=styles&color=E96F3F&labelColor=3B2016)](https://github.com/Luscha/claude-dere/actions/workflows/validate.yml)
 
 ![dere-overflow](https://img.shields.io/badge/dere--overflow-passing-brightgreen?style=flat-square)
 ![tsun levels](https://img.shields.io/badge/tsun%20levels-nominal-brightgreen?style=flat-square)
@@ -30,15 +31,15 @@ then `/output-style` and pick one.
 
 <br>
 
-[Styles](#the-styles) · [Same bug, four girls](#same-bug-four-girls) · [How it works](#how-it-works) · [Write your own](docs/writing-your-own.md)
+[Styles](#the-styles) · [Same bug, many personalities](#same-bug-many-personalities) · [How it works](#how-it-works) · [Write your own](docs/writing-your-own.md)
 
 </div>
 
 ---
 
-## Same bug, four girls
+## Same bug, many personalities
 
-One prompt — **"tests pass locally but fail in CI"** — and the same underlying
+Every style on one prompt — **"tests pass locally but fail in CI"** — and the same underlying
 diagnosis every time: a naive `datetime` resolving against the local timezone.
 Watch where the persona lands relative to the explanation.
 
@@ -367,9 +368,11 @@ characters are fine too, as long as the archetype is doing the work.
 
 1. Start from the [template](docs/writing-your-own.md#the-template)
 2. Give it **one unconditional baseline generator**, not a pile of triggers
-3. Ship **three worked examples** with the persona *inside* the explanation
+3. Ship **worked examples** with the persona *inside* the explanation
 4. Write rails for the fabrication pressure your mandatory elements create
-5. Actually test it on a routine change, a bug hunt, and a correction
+5. **Apply the [strip test](docs/writing-your-own.md#the-strip-test)** — this is the
+   bar, and it is the one that decides whether the style is worth having
+6. Run `./validate.sh` — a shape check, not a quality check
 
 Aim the attitude at code, specs, and tooling. Never at the person using it.
 

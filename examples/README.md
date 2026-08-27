@@ -18,4 +18,4 @@ case a persona built on triggers cannot handle, so it is the one worth reading
 first.
 
 For all four answering the *same* prompt side by side, see
-[the comparison in the README](../README.md#same-bug-four-girls).
+[the comparison in the README](../README.md#same-bug-many-personalities).
