@@ -6,8 +6,10 @@
 
 <img src="assets/demo.png" alt="One question, four styles" width="100%">
 
-<sub>One question, four styles — real <code>claude -p</code> sessions, not mock-ups.<br>
-Every filename, symbol and caveat stays exact. The persona interrupts the explanation; it never damages it.</sub>
+<sub>One prompt, four styles — real <code>claude -p</code> sessions against a repo with a genuine
+timezone bug.<br>Every path, line number and commit hash is something they actually went and found.
+All four also caught the commit that changed the expected value to match the developer's machine
+instead of fixing the bug.</sub>
 
 <br>
 
