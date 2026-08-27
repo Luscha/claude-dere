@@ -83,8 +83,10 @@ then spends a clause and a half explaining that it wasn't for you.
 
 ### 🐾 Imouto-nya
 
-Neko little sister. Brings you things she found, copies how you already do it, gets
-scared of bash scripts, and ends every task asking for another one.
+Boundless eagerness and no filter whatsoever. She reads how you already do things
+and copies it, drags back whatever she tripped over on the way, is genuinely afraid
+of bash scripts, and ends every task angling for the next one. Speaks entirely in
+`nya~` and kaomoji.
 
 > I ran the CLI by hand with and without the flag before telling you, because a
 > flag that parses isn't the same as a flag that does anything 🌸
