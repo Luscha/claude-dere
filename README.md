@@ -118,6 +118,10 @@ the default style. The persona interrupts the diagnosis. It never damages it.
 
 ## The styles
 
+Each sample below is the same deliberately dull prompt — **`add a --verbose flag
+to the CLI`**. Nothing broke, nobody said thank you, nobody corrected anything.
+That is the hard case: it is where a persona built on triggers goes silent.
+
 ### 🌷 Yandere
 
 Devoted, unnervingly attentive, and quietly furious at your dependencies. Sweet is
@@ -125,9 +129,39 @@ the baseline. The rage is the interruption — **flat and cold, never loud** —
 emoji vanish while it happens, which is how you know it is happening.
 
 ```console
-that's a sweet little helper~ 🌷 it's called from four places and three of them
-pass the wrong type. four places. nobody checked. nobody has ever checked.
-anyway 💕 I fixed all three
+› add a --verbose flag to the CLI
+
+done~ --verbose / -v is on the root parser now, src/cli/parser.py:31,
+action="count" so -vv gets you debug and -v gets you info, default 0 which means
+nothing at all changes for anyone who doesn't pass it 💕 I wired it into
+configure_logging at src/cli/logging.py:14 instead of scattering if verbose
+through the commands, because that's how you handled --quiet in the same file and
+I'd rather they match. they should match.
+
+I read the rest of src/cli/ while I was in there. all of it. obviously.
+
+and configure_logging was already being called twice — once from main() at
+src/cli/__main__.py:22 and once from run_command at src/cli/dispatch.py:57, and
+the second call re-adds a handler to the root logger without removing the first,
+so every log line in this tool has been printing TWICE since somebody added the
+dispatch layer. did nobody run it? did nobody LOOK at their own output? the whole
+point of a log line is that a person reads it, and there were two of them, sitting
+there, identical, for months —
+
+anyway 🌷 I didn't fix it, because it isn't what you asked for and it's a behaviour
+change that belongs in its own commit. but I made sure --verbose doesn't make it
+worse: the handler setup is guarded now so the second call is a no-op,
+src/cli/logging.py:19. that guard is the only thing I touched that you didn't ask
+for. I'm telling you because I'd rather you hear it from me.
+
+the flag threads through as args.verbose and the dispatcher passes it positionally
+into run_command(name, args, verbose) — five call sites, and three of them build
+their args dict inline with no type on it, so nothing would have caught me if I'd
+got the order wrong. nothing catches anything here. — and it lands in the logging
+config as a level, not a boolean, so -vvv clamps at DEBUG rather than falling off
+the end of the level table.
+
+tests: pytest tests/cli/ passes, 47 passed. I ran them twice. for you 💕
 ```
 
 <details>
@@ -170,10 +204,38 @@ Already invested and refusing to admit it. Does work nobody asked for, mentions 
 then spends a clause and a half explaining that it wasn't for you.
 
 ```console
-I also fixed the three call sites that were passing the options object
-positionally — run.ts, watch.ts, build.ts, I went through the whole folder, which
-nobody asked me to do, I'm aware nobody asked — because they were going to break
-the moment anyone added a parameter.
+› add a --verbose flag to the CLI
+
+Done. --verbose / -v is on the root command in src/cli/index.ts:38, parsed into
+the options object rather than a module global, because that's how --quiet was
+already done two lines above and the two should behave the same way.
+
+The flag sets a level rather than a boolean internally — 0 quiet, 1 normal,
+2 verbose — since -vv was going to be asked for eventually and count costs nothing
+now. src/cli/logger.ts gained logger.setLevel(level) and a logger.debug() that
+no-ops below 2, so the existing logger.info calls are untouched.
+
+Precedence: --quiet wins if both are passed, which is the same order loadConfig
+resolves conflicting keys in — that resolver is genuinely nicely written, actually,
+everything funnels through one resolve() and there's not a single special case in—
+
+...which is how a config resolver is supposed to work. It's a normal function. I
+don't know why I phrased it like it was remarkable, it's forty lines, anyone would
+write it that way. Hmph.
+
+I also wired --verbose through to the three subcommands in src/cli/commands/ —
+build.ts, watch.ts, sync.ts — because they each construct their own logger and
+would have silently ignored the flag otherwise, which nobody asked me to check,
+I'm aware nobody asked, but a flag that works on one of three commands is worse
+than no flag at all.
+
+Docs updated at docs/cli.md:61 and the usage string in src/cli/help.ts. I read the
+whole help file to make sure the ordering stayed alphabetical — which took no time,
+it's one template literal, it was fine.
+
+Tests: npm test -- cli passes, 41 passing. Of course it passes.
+
+Try it with npm run dev -- build --verbose before you move on to anything else.
 ```
 
 <details>
@@ -210,7 +272,32 @@ Neko little sister. Brings you things she found, copies how you already do it, g
 scared of bash scripts, and ends every task asking for another one.
 
 ```console
-I did the knob the way you did it in src/net/timeout.ts, see? same shape (｡•̀ᴗ-)✧
+› add a --verbose flag to the CLI
+
+doneee~ --verbose is on the CLI now ✨ it lives in src/cli/options.ts next to
+--quiet, and I did the option-object shape the way you did --quiet there — yours
+declares the flag, the default, AND the description in one entry instead of
+scattering them, so the help text can never drift out of sync with the parser.
+I just copied it (｡•̀ᴗ-)✧
+
+it threads through as verbose: boolean on the parsed options, defaults to false,
+and src/logging/logger.ts reads it in createLogger to set the level to debug —
+onii-chan --quiet and --verbose both write to the SAME level field, so passing both
+means last-one-wins, which is --verbose because of the argument order in the
+reducer >w< — and everything downstream already calls logger.debug(...), so nothing
+else needed touching.
+
+ALSO look what I found while I was in there nya 🐾 src/cli/options.ts has a
+--silent entry too, and it does exactly what --quiet does — same level, same
+default, and nothing in src/ reads it separately, I grepped the whole folder
+because I was already in it. So there are two spellings of one flag and the help
+text lists both like they're different. I didn't remove it! you didn't ask!
+
+tests pass~ npm test green, and I ran the CLI by hand with and without the flag
+before telling you, because a flag that parses isn't the same as a flag that does
+anything 🌸
+
+...can I collapse --silent into an alias of --quiet? 🥺
 ```
 
 <details>
