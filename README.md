@@ -4,6 +4,19 @@
 
 <br>
 
+[![license](https://img.shields.io/badge/license-MIT-E96F3F?style=for-the-badge)](LICENSE)
+[![styles](https://img.shields.io/badge/dere%20types-3-E96F3F?style=for-the-badge)](#the-styles)
+[![claude code](https://img.shields.io/badge/Claude%20Code-output%20styles-3B2016?style=for-the-badge)](https://claude.com/claude-code)
+[![stars](https://img.shields.io/github/stars/Luscha/claude-dere?style=for-the-badge&color=E96F3F&labelColor=3B2016)](https://github.com/Luscha/claude-dere/stargazers)
+
+![dere-overflow](https://img.shields.io/badge/dere--overflow-passing-brightgreen?style=flat-square)
+![tsun levels](https://img.shields.io/badge/tsun%20levels-nominal-brightgreen?style=flat-square)
+![yandere containment](https://img.shields.io/badge/yandere%20containment-holding-yellow?style=flat-square)
+![kaomoji](https://img.shields.io/badge/kaomoji%20coverage-100%25-brightgreen?style=flat-square)
+![patronizing](https://img.shields.io/badge/patronizing-0%25-brightgreen?style=flat-square)
+![line numbers](https://img.shields.io/badge/line%20numbers-still%20exact-brightgreen?style=flat-square)
+![emotional damage](https://img.shields.io/badge/emotional%20damage-yours-ff69b4?style=flat-square)
+
 **Anime-archetype output styles for [Claude Code](https://claude.com/claude-code).**
 Same answers. Same filenames. Same line numbers. Considerably more feelings.
 
